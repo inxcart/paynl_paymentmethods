@@ -11,6 +11,7 @@ class Pay_Helper_Transaction {
             'amount' => (int)$amount,
             'currency' => $currency,
             'order_id' => $order_id,
+            'status' => 'NEW',
             'start_data' => $db->escape(json_encode($startData)),
         );
 
@@ -155,6 +156,33 @@ class Pay_Helper_Transaction {
                 $history->changeIdOrderState((int) $statusCancel, $objOrder);
                 $history->addWithemail();
             }
+        } elseif ($stateText == 'PENDING'){
+            $id_order_state = $statusPending;
+
+            $module = Module::getInstanceByName(Tools::getValue('module'));
+
+            $cart = new Cart($cartId);
+            $customer = new Customer($cart->id_customer);
+
+            $currency = $cart->id_currency;
+
+
+            $orderTotal = $cart->getOrderTotal();
+            $extraFee = $module->getExtraCosts($transaction['option_id'], $orderTotal);
+
+            $cart->additional_shipping_cost += $extraFee;
+
+            $cart->save();
+
+            $paymentMethodName = $module->getPaymentMethodName($transaction['option_id']);
+
+
+            $paidAmount = 0;
+
+
+            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
+
+            $real_order_id = Order::getOrderByCartId($cart->id);
         }
 
         return array(

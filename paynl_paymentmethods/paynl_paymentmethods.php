@@ -41,7 +41,7 @@ class paynl_paymentmethods extends PaymentModule {
             } else {
                 $id_order_state_tmp = $id_order_state;
             }
-            $result = parent::validateOrder($id_cart, $id_order_state_tmp, $amount_paid, $this->displayName, $message, $extra_vars, $currency_special, $dont_touch_amount, $secure_key, $shop);
+            $result = parent::validateOrder($id_cart, $id_order_state_tmp, $amount_paid, $payment_method, $message, $extra_vars, $currency_special, $dont_touch_amount, $secure_key, $shop);
             $orderId = $this->currentOrder;
 
             if ($extraCosts == 0 && $id_order_state_tmp == $statusPaid) {
