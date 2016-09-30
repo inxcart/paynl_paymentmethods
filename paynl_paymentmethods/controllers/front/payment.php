@@ -196,11 +196,11 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
 
             $apiStart->setApiToken($token);
             $apiStart->setServiceId($serviceId);
-            $apiStart->setDescription($cart->id);
+
+            $description = Configuration::get('PAYNL_DESCRIPTION_PREFIX').' '.$cart->id;
+            $description = trim($description);
+            $apiStart->setDescription($description);
             $apiStart->setExtra1('CartId: ' . $cart->id);
-            //$apiStart->setExtra2();
-
-
 
             $apiStart->setPaymentOptionId($paymentOptionId);
 

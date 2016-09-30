@@ -10,7 +10,7 @@ class paynl_paymentmethods extends PaymentModule {
     public function __construct() {
         $this->name = 'paynl_paymentmethods';
         $this->tab = 'payments_gateways';
-        $this->version = '3.3.1';
+        $this->version = '3.4.1';
         $this->_postErrors = array();
 		$this->module_key = '6c2f48f238008e8f68271f5e4763d308';
 
@@ -298,6 +298,7 @@ class paynl_paymentmethods extends PaymentModule {
             if (!sizeof($this->_postErrors)) {
                 Configuration::updateValue('PAYNL_TOKEN', $_POST['paynltoken']);
                 Configuration::updateValue('PAYNL_SERVICE_ID', $_POST['service_id']);
+                Configuration::updateValue('PAYNL_DESCRIPTION_PREFIX', $_POST['description_prefix']);
                 Configuration::updateValue('PAYNL_WAIT', $_POST['wait']);
                 Configuration::updateValue('PAYNL_SUCCESS', $_POST['success']);
                 Configuration::updateValue('PAYNL_CANCEL', $_POST['cancel']);
@@ -398,8 +399,10 @@ class paynl_paymentmethods extends PaymentModule {
 
         $paynltoken = array_key_exists('paynltoken', $_POST) ? $_POST['paynltoken'] : (array_key_exists('PAYNL_TOKEN', $conf) ? $conf['PAYNL_TOKEN'] : '');
         $service_id = array_key_exists('service_id', $_POST) ? $_POST['service_id'] : (array_key_exists('PAYNL_SERVICE_ID', $conf) ? $conf['PAYNL_SERVICE_ID'] : '');
+        $description_prefix = array_key_exists('description_prefix', $_POST) ? $_POST['description_prefix'] : (array_key_exists('PAYNL_DESCRIPTION_PREFIX', $conf) ? $conf['PAYNL_DESCRIPTION_PREFIX'] : '');
 
-        $wait = array_key_exists('wait', $_POST) ? $_POST['wait'] : (array_key_exists('PAYNL_WAIT', $conf) ? $conf['PAYNL_WAIT'] : '10');
+
+        $wait = array_key_exists('wait', $_POST) ? $_POST['wait'] : (array_key_exists('PAYNL_WAIT', $conf) ? $conf['PAYNL_WAIT'] : '11');
         $success = array_key_exists('success', $_POST) ? $_POST['success'] : (array_key_exists('PAYNL_SUCCESS', $conf) ? $conf['PAYNL_SUCCESS'] : '2');
         $amountnotvalid = array_key_exists('amountnotvalid', $_POST) ? $_POST['amountnotvalid'] : (array_key_exists('PAYNL_AMOUNTNOTVALID', $conf) ? $conf['PAYNL_AMOUNTNOTVALID'] : '1');
         $cancel = array_key_exists('cancel', $_POST) ? $_POST['cancel'] : (array_key_exists('PAYNL_CANCEL', $conf) ? $conf['PAYNL_CANCEL'] : '6');
@@ -479,9 +482,6 @@ class paynl_paymentmethods extends PaymentModule {
             $profilesOrder = (array_key_exists('PAYNL_PAYMENT_METHOD_ORDER', $conf) ? $conf['PAYNL_PAYMENT_METHOD_ORDER'] : '');
             $extraCosts = (array_key_exists('PAYNL_PAYMENT_EXTRA_COSTS', $conf) ? $conf['PAYNL_PAYMENT_EXTRA_COSTS'] : '');
             $validateOnStart = (array_key_exists('PAYNL_VALIDATE_ON_START', $conf) ? $conf['PAYNL_VALIDATE_ON_START'] : '');
-
-
-
 
 
             if (strlen($profilesOrder) == 0) {
@@ -621,6 +621,8 @@ class paynl_paymentmethods extends PaymentModule {
       <div class="margin-form"><input type="text" size="33" name="paynltoken" value="' . htmlentities($paynltoken, ENT_COMPAT, 'UTF-8') . '" /></div>
       <label>' . $this->l('Service ID') . '</label>
       <div class="margin-form"><input type="text" size="33" name="service_id" value="' . htmlentities($service_id, ENT_COMPAT, 'UTF-8') . '" /></div>
+      <label>' . $this->l('Order description prefix') . '</label>
+      <div class="margin-form"><input type="text" size="33" name="description_prefix" value="' . htmlentities($description_prefix, ENT_COMPAT, 'UTF-8') . '" /></div>
       <br>
       <hr>
       <br>
