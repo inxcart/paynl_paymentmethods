@@ -23,6 +23,12 @@ class paynl_paymentmethods extends PaymentModule {
         $this->displayName = $this->l('Pay.nl Payment methods');
         $this->description = $this->l('Accept payments by Pay.nl');
         $this->confirmUninstall = $this->l('Are you sure you want to delete your details?');
+
+        if (Tools::getValue('id_order')) {
+            $id_order           = (int)Tools::getValue('id_order');
+            $order              = new Order($id_order);
+            $this->displayName  = $order->payment;
+        }
     }
 
     public function validateOrderPay($id_cart, $id_order_state, $amount_paid, $extraCosts, $payment_method = 'Unknown', $message = null, $extra_vars = array(), $currency_special = null, $dont_touch_amount = false, $secure_key = false, Shop $shop = null) {
@@ -58,7 +64,7 @@ class paynl_paymentmethods extends PaymentModule {
             $extraCostsExcl = round($extraCosts / (1 + (21 / 100)), 2);
 
             if ($extraCosts != 0) {
-                //als de order extra kosten heeft, moeten deze worden toegevoegd. 
+                //als de order extra kosten heeft, moeten deze worden toegevoegd.
                 $order->total_shipping = $newShippingCosts;
                 $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + $extraCostsExcl;
                 $order->total_shipping_tax_incl = $newShippingCosts;
@@ -164,7 +170,7 @@ class paynl_paymentmethods extends PaymentModule {
         if(is_array($names) && !empty($names[$paymentMethodId])){
             return $names[$paymentMethodId];
         }
-        
+
         $apiService = new Pay_Api_Getservice();
         $apiService->setApiToken($token);
         $apiService->setServiceId($serviceId);
@@ -260,7 +266,7 @@ class paynl_paymentmethods extends PaymentModule {
                         unset($activeProfilesTemp[$iKey]);
                     }
                 }
-            }        
+            }
 
             $smarty->assign(array(
                 'this_path' => $this->_path,
@@ -323,7 +329,7 @@ class paynl_paymentmethods extends PaymentModule {
                     }
                     Configuration::updateValue('PAYNL_PAYMENT_EXTRA_COSTS', serialize($arrExtraCosts));
                 }
-                if(isset($_POST['profileName'])){                
+                if(isset($_POST['profileName'])){
                     Configuration::updateValue('PAYNL_PAYMENT_METHOD_NAME', serialize($_POST['profileName']));
                 }
                 if(isset($_POST['minAmount'])){
@@ -332,7 +338,7 @@ class paynl_paymentmethods extends PaymentModule {
                 if(isset($_POST['maxAmount'])){
                     Configuration::updateValue('PAYNL_PAYMENT_MAX', serialize($_POST['maxAmount']));
                 }
-                
+
                 if (isset($_POST['validateOnStart'])) {
                     Configuration::updateValue('PAYNL_VALIDATE_ON_START', serialize($_POST['validateOnStart']));
                 }
@@ -377,7 +383,7 @@ class paynl_paymentmethods extends PaymentModule {
     <br /><br /><br />';
     }
 
-    public function displayFormSettings() {   
+    public function displayFormSettings() {
 
         $arrConfig = array();
         $arrConfig[] = 'PAYNL_TOKEN';
@@ -457,7 +463,7 @@ class paynl_paymentmethods extends PaymentModule {
 
             $profiles = $serviceApi->doRequest();
             $profiles = $profiles['paymentOptions'];
-    
+
 
 
 
@@ -553,16 +559,16 @@ class paynl_paymentmethods extends PaymentModule {
             $exceptions.= '<th>' . $this->l('Extra costs max') . '</th>';
             $exceptions.= '<th>' . $this->l('Validate on transaction start') . '</th>';
             $exceptions .= '</tr>';
-            
+
             $names = (array_key_exists('PAYNL_PAYMENT_METHOD_NAME', $conf) ? $conf['PAYNL_PAYMENT_METHOD_NAME'] : '');
-            $names = unserialize($names);        
+            $names = unserialize($names);
 
             foreach ($profiles as $profile) {
                 $name = $profile['name'];
                 if(is_array($names) && !empty($names[$profile['id']])){
                     $name = $names[$profile['id']];
                 }
-                
+
                 $exceptions.='<tr><td><input type="text" name="profileName['.$profile['id'].']" value="' . $name . '" /></td><td>';
 
                 $exceptions.='<select name="enaO[' . $profile['id'] . ']">';
@@ -589,8 +595,8 @@ class paynl_paymentmethods extends PaymentModule {
 
 
 
-                $exceptions .= '<td><input name="minAmount[' . $profile['id'] . ']" type="text" value="' . $minAmount[$profile['id']] . '" /></td>';
-                $exceptions .= '<td><input name="maxAmount[' . $profile['id'] . ']" type="text" value="' . $maxAmount[$profile['id']] . '" /></td>';
+                $exceptions .= '<td><input name="minAmount[' . $profile['id'] . ']" type="text" value="' . (isset($minAmount[$profile['id']]) ? $minAmount[$profile['id']] : '') . '" /></td>';
+                $exceptions .= '<td><input name="maxAmount[' . $profile['id'] . ']" type="text" value="' . (isset($maxAmount[$profile['id']]) ? $maxAmount[$profile['id']] : '') . '" /></td>';
                 $exceptions .= '<td><input name="payExtraCosts[' . $profile['id'] . '][fixed]" type="text" value="' . $fixed . '" /></td>';
                 $exceptions .= '<td><input name="payExtraCosts[' . $profile['id'] . '][percentage]"  type="text" value="' . $percentage . '" /></td>';
                 $exceptions .= '<td><input name="payExtraCosts[' . $profile['id'] . '][max]"  type="text" value="' . $max . '" /></td>';
@@ -616,7 +622,7 @@ class paynl_paymentmethods extends PaymentModule {
     <form action="' . $_SERVER['REQUEST_URI'] . '" method="post">
     <fieldset>
       <legend><img src="../img/admin/contact.gif" />' . $this->l('Settings') . '</legend>
-      
+
       <label>' . $this->l('Token') . '</label>
       <div class="margin-form"><input type="text" size="33" name="paynltoken" value="' . htmlentities($paynltoken, ENT_COMPAT, 'UTF-8') . '" /></div>
       <label>' . $this->l('Service ID') . '</label>
@@ -627,7 +633,7 @@ class paynl_paymentmethods extends PaymentModule {
       <hr>
       <br>
       <label>' . $this->l('Pending') . '</label>
-      <div class="margin-form">' . $osWait . ' Alleen van toepassing op betalingen waarbij extra kosten worden gerekend, de status gaat daarna meteen naar success</div> 
+      <div class="margin-form">' . $osWait . ' Alleen van toepassing op betalingen waarbij extra kosten worden gerekend, de status gaat daarna meteen naar success</div>
       <label>' . $this->l('Success') . '</label>
       <div class="margin-form">' . $osSuccess . '</div>
       <label>' . $this->l('Cancel') . '</label>
