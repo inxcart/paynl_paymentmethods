@@ -387,6 +387,7 @@ class paynl_paymentmethods extends PaymentModule {
 
         $arrConfig = array();
         $arrConfig[] = 'PAYNL_TOKEN';
+        $arrConfig[] = 'PAYNL_DESCRIPTION_PREFIX';
         $arrConfig[] = 'PAYNL_SERVICE_ID';
         $arrConfig[] = 'PAYNL_WAIT';
         $arrConfig[] = 'PAYNL_SUCCESS';
