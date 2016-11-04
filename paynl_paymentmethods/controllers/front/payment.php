@@ -173,16 +173,20 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             }
 
             //verzendkosten toevoegen
-            $shippingCost = $cart->getTotalShippingCost();
+            $shippingCost = $cart->getTotalShippingCost(null,true);
+            $shippingCost_no_tax = $cart->getTotalShippingCost(null,false);
             if ($shippingCost != 0) {
-                $apiStart->addProduct('SHIPPING', 'Verzendkosten', round($shippingCost * 100), 1, 'H');
+                $taxClass= Pay_Helper::calculateTaxClass($shippingCost, $shippingCost-$shippingCost_no_tax);
+                $apiStart->addProduct('SHIPPING', 'Verzendkosten', round($shippingCost * 100), 1, $taxClass);
             }
 
             //Inpakservice toevoegen
             if ($cart->gift != 0) {
                 $packingCost = $cart->getGiftWrappingPrice(true);
+                $packingCost_no_tax = $cart->getGiftWrappingPrice(false);
                 if ($packingCost != 0) {
-                    $apiStart->addProduct('PACKING', 'Inpakservice', round($packingCost * 100), 1, 'H');
+                    $taxClass = Pay_Helper::calculateTaxClass($packingCost, $packingCost-$packingCost_no_tax);
+                    $apiStart->addProduct('PACKING', 'Inpakservice', round($packingCost * 100), 1, $taxClass);
                 }
             }
 
