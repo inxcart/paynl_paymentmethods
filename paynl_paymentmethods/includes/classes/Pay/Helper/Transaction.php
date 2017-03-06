@@ -39,7 +39,7 @@ class Pay_Helper_Transaction {
     /**
      * Check if the order is already paid, it is possible that an order has more than 1 transaction.
      * So we heck if another transaction for this order is already paid
-     * 
+     *
      * @param integer $order_id
      */
     public static function orderPaid($order_id) {
@@ -81,7 +81,7 @@ class Pay_Helper_Transaction {
         } catch (Pay_Exception $ex) {
             // transactie is niet gevonden... quickfix, we voegen hem opnieuw toe
             self::addTransaction($transactionId, $result['paymentDetails']['paymentOptionId'], $result['paymentDetails']['amount'],  $result['paymentDetails']['paidCurrency'], str_replace('CartId: ', '', $result['statsDetails']['extra1']), 'Inserted after not found');
- 
+
             $transaction = self::getTransaction($transactionId);
         }
 
@@ -132,15 +132,17 @@ class Pay_Helper_Transaction {
             $orderTotal = $cart->getOrderTotal();
             $extraFee = $module->getExtraCosts($transaction['option_id'], $orderTotal);
 
-            $cart->additional_shipping_cost += $extraFee;
+            if (isset($cart->additional_shipping_cost)) {
+                $cart->additional_shipping_cost += $extraFee;
+            }
 
             $cart->save();
 
             $paymentMethodName = $module->getPaymentMethodName($transaction['option_id']);
 
-      
+
             $paidAmount = $transactionAmount / 100;
-            
+
 
 
             $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
@@ -194,7 +196,7 @@ class Pay_Helper_Transaction {
 
     /**
      * Get the status by statusId
-     * 
+     *
      * @param int $statusId
      * @return string The status
      */
