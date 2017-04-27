@@ -50,7 +50,7 @@ class Pay_Api {
      *
      * @var array The data to post to the pay.nl server
      */
-    protected $_postData = array();
+    protected $_postData = [];
 
     
     /**

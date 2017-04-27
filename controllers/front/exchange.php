@@ -29,25 +29,25 @@
  */
 class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontController
 {
-	public function initContent()
-	{
-            $transactionId = Tools::getValue('order_id');
-            $action = Tools::getValue('action');
-           
-            try{
-                if(strpos($action, 'refund') !== false){
-                    throw new Pay_Exception('Ignoring refund');
-                }
-                if(strpos($action, 'pending') !== false){
-                    throw new Pay_Exception('Ignoring pending');
-                }
-                $result = Pay_Helper_Transaction::processTransaction($transactionId);
-            } catch (Exception $ex) {
-                echo "TRUE| ";
-                echo $ex->getMessage();
-                die();
+    public function initContent()
+    {
+        $transactionId = Tools::getValue('order_id');
+        $action = Tools::getValue('action');
+
+        try {
+            if (strpos($action, 'refund') !== false) {
+                throw new Pay_Exception('Ignoring refund');
             }
-            echo 'TRUE| Status updated to '.$result['state']. ' for cartId: '.$result['orderId'].' orderId: '.@$result['real_order_id'];
+            if (strpos($action, 'pending') !== false) {
+                throw new Pay_Exception('Ignoring pending');
+            }
+            $result = Pay_Helper_Transaction::processTransaction($transactionId);
+        } catch (Exception $ex) {
+            echo "TRUE| ";
+            echo $ex->getMessage();
             die();
-	}
+        }
+        echo 'TRUE| Status updated to '.$result['state'].' for cartId: '.$result['orderId'].' orderId: '.@$result['real_order_id'];
+        die();
+    }
 }

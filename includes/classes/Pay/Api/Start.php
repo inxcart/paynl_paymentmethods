@@ -27,7 +27,7 @@ class Pay_Api_Start extends Pay_Api {
     private $_domainId;
     private $_transferData;
     
-    private $_products = array();
+    private $_products = [];
 
     public function setCurrency($currency){
         $this->_currency = strtoupper($currency);
@@ -72,13 +72,13 @@ class Pay_Api_Start extends Pay_Api {
         //description mag maar 45 chars lang zijn
         $description = substr($description, 0, 45);
 
-        $arrProduct = array(
+        $arrProduct = [
             'productId' => $id,
             'description' => $description,
             'price' => $price,
             'quantity' => $quantity,
             'vatCode' => $vatPercentage,
-        );
+        ];
         $this->_products[] = $arrProduct;
     }
 
@@ -245,7 +245,7 @@ class Pay_Api_Start extends Pay_Api {
         $data['ipAddress'] = Tools::getRemoteAddr();
         
         // I set the browser data with dummydata, because most servers dont have the get_browser function available
-        $data['browserData'] = array(
+        $data['browserData'] = [
             'browser_name_regex' => '^mozilla/5\.0 (windows; .; windows nt 5\.1; .*rv:.*) gecko/.* firefox/0\.9.*$',
             'browser_name_pattern' => 'Mozilla/5.0 (Windows; ?; Windows NT 5.1; *rv:*) Gecko/* Firefox/0.9*',
             'parent' => 'Firefox 0.9',
@@ -259,7 +259,7 @@ class Pay_Api_Start extends Pay_Api {
             'iframes' => 1,
             'tables' => 1,
             'cookies' => 1,
-        );
+        ];
         if (!empty($this->_products)) {
             $data['saleData']['invoiceDate'] = date('d-m-Y');
             $data['saleData']['deliveryDate'] = date('d-m-Y', strtotime('+1 day'));

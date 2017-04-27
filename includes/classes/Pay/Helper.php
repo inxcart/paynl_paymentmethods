@@ -43,7 +43,7 @@ class Pay_Helper {
 
     //remove all empty nodes in an array
     public static function filterArrayRecursive($array) {
-        $newArray = array();
+        $newArray = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $value = self::filterArrayRecursive($value);
@@ -113,7 +113,7 @@ class Pay_Helper {
             $strStreetName = implode(' ',$a);
         }
 
-        return array($strStreetName, $strStreetNumber);
+        return [$strStreetName, $strStreetNumber];
     }
 
     /**
@@ -125,11 +125,11 @@ class Pay_Helper {
      */
     public static function calculateTaxClass($amountInclTax, $taxAmount)
     {
-        $taxClasses = array(
+        $taxClasses = [
             0 => 'N',
             6 => 'L',
             21 => 'H'
-        );
+        ];
         // return 0 if amount or tax is 0
         if ($taxAmount == 0 || $amountInclTax == 0) {
             return $taxClasses[0];
@@ -151,7 +151,7 @@ class Pay_Helper {
         $output = FALSE;
         $number = intval($number);
         if (is_array($numbers) && count($numbers) >= 1) {
-            $NDat = array();
+            $NDat = [];
             foreach ($numbers as $n) {
                 $NDat[abs($number - $n)] = $n;
             }

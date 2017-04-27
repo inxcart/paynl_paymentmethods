@@ -28,9 +28,11 @@
 /**
  * @since 1.5.0
  */
-class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontController {
+class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontController
+{
 
-    public function initContent() {
+    public function initContent()
+    {
         parent::initContent();
         $transactionId = Tools::getValue('orderId');
 
@@ -40,26 +42,28 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
             $order = new Order($result['real_order_id']);
             $customer = new Customer($order->id_customer);
 
-            $this->context->smarty->assign(array(
-                'reference_order' => $result['real_order_id'],
-                'email' => $customer->email,
-                'id_order_formatted'=> $order->reference,
-            ));
+            $this->context->smarty->assign(
+                [
+                    'reference_order'    => $result['real_order_id'],
+                    'email'              => $customer->email,
+                    'id_order_formatted' => $order->reference,
+                ]
+            );
             $slowvalidation = '';
-            if(!($result['real_order_id'])){
+            if (!($result['real_order_id'])) {
                 $slowvalidation = "&slowvalidation=1";
             }
             if ($result['state'] == 'PAID') {
                 Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key.$slowvalidation);
-             
+
             }
             if ($result['state'] == 'CHECKAMOUNT') {
                 $this->setTemplate('return_checkamount.tpl');
             }
             if ($result['state'] == 'CANCEL') {
-                if(!empty($result['real_order_id'])){
+                if (!empty($result['real_order_id'])) {
                     Tools::redirect('index.php?controller=order&submitReorder=Reorder&id_order='.$result['real_order_id']);
-                }else {
+                } else {
                     Tools::redirect('index.php?controller=order');
                 }
             }
@@ -67,8 +71,7 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
                 Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key);
             }
         } catch (Exception $ex) {
-
-            echo 'Error: ' . $ex->getMessage();
+            echo 'Error: '.$ex->getMessage();
             die();
         }
     }

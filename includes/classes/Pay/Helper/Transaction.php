@@ -5,7 +5,7 @@ class Pay_Helper_Transaction {
     public static function addTransaction($transaction_id, $option_id, $amount, $currency, $order_id, $startData) {
         $db = Db::getInstance();
 
-        $data = array(
+        $data = [
             'transaction_id' => $transaction_id,
             'option_id' => (int)$option_id,
             'amount' => (int)$amount,
@@ -13,7 +13,7 @@ class Pay_Helper_Transaction {
             'order_id' => $order_id,
             'status' => 'NEW',
             'start_data' => $db->escape(json_encode($startData)),
-        );
+        ];
 
         $db->insert('pay_transactions', $data);
     }
@@ -21,7 +21,7 @@ class Pay_Helper_Transaction {
     private static function updateTransactionState($transactionId, $statusText) {
         $db = Db::getInstance();
 
-        $db->update('pay_transactions', array('status' => $statusText), "transaction_id = '" . $db->escape($transactionId) . "'");
+        $db->update('pay_transactions', ['status' => $statusText], "transaction_id = '" . $db->escape($transactionId) . "'");
     }
 
     public static function getTransaction($transaction_id) {
@@ -96,11 +96,11 @@ class Pay_Helper_Transaction {
         if ($stateText == $transaction['status'] || $dry_run) {
             //nothing changed so return without changing anything
             $real_order_id = Order::getOrderByCartId($orderId);
-            return array(
+            return [
                 'orderId' => $orderId,
                 'state' => $stateText,
                 'real_order_id' => $real_order_id,
-            );
+            ];
         }
 
         //update the transaction state
@@ -145,7 +145,7 @@ class Pay_Helper_Transaction {
 
 
 
-            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
+            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, ['transaction_id' => $transactionId], (int) $currency, false, $customer->secure_key);
 
             $real_order_id = Order::getOrderByCartId($cart->id);
         } elseif ($stateText == 'CANCEL') {
@@ -182,16 +182,16 @@ class Pay_Helper_Transaction {
             $paidAmount = 0;
 
 
-            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
+            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, ['transaction_id' => $transactionId], (int) $currency, false, $customer->secure_key);
 
             $real_order_id = Order::getOrderByCartId($cart->id);
         }
 
-        return array(
+        return [
             'orderId' => $orderId,
             'real_order_id' => $real_order_id,
             'state' => $stateText,
-        );
+        ];
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ea713b9ffdda58ce48ccec052e29fd6'] = 'Pay.nl betaalmethoden';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_da11e586f68cd9528c0c16328cdf9f5f'] = 'Acepteer betalingen via Pay.nl';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_69a1a3ad8dd5da6db3c4da838a0cf9c7'] = 'Weet je zeker dat je de gegevens wilt verwijderen?';

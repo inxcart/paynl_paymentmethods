@@ -35,7 +35,7 @@ class Pay_Api_Getservice extends Pay_Api {
             return $arrReturn;
         }
 
-        $arrReturn['paymentOptions'] = array();
+        $arrReturn['paymentOptions'] = [];
 
         $countryOptionList = $arrReturn['countryOptionList'];
         unset($arrReturn['countryOptionList']);
@@ -44,15 +44,15 @@ class Pay_Api_Getservice extends Pay_Api {
                 foreach ($arrCountry['paymentOptionList'] AS $arrPaymentProfile) {
 
                     if (!isset($arrReturn['paymentOptions'][$arrPaymentProfile['id']])) {
-                        $arrReturn['paymentOptions'][$arrPaymentProfile['id']] = array(
+                        $arrReturn['paymentOptions'][$arrPaymentProfile['id']] = [
                             'id' => $arrPaymentProfile['id'],
                             'name' => $arrPaymentProfile['name'],
                             'visibleName' => $arrPaymentProfile['name'],
                             'img' => $arrPaymentProfile['img'],
                             'path' => $arrPaymentProfile['path'],
-                            'paymentOptionSubList' => array(),
-                            'countries' => array(),
-                        );
+                            'paymentOptionSubList' => [],
+                            'countries' => [],
+                        ];
                     }
 
                     if (!empty($arrPaymentProfile['paymentOptionSubList'])) {
@@ -60,10 +60,10 @@ class Pay_Api_Getservice extends Pay_Api {
                     }
 
 
-                    $arrReturn['paymentOptions'][$arrPaymentProfile['id']]['countries'][$strCountrCode] = array(
+                    $arrReturn['paymentOptions'][$arrPaymentProfile['id']]['countries'][$strCountrCode] = [
                         'id' => $strCountrCode,
                         'name' => $arrCountry['visibleName'],
-                    );
+                    ];
                 }
             }
         }
