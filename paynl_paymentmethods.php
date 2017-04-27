@@ -16,7 +16,7 @@ class paynl_paymentmethods extends PaymentModule
         $this->name = 'paynl_paymentmethods';
         $this->tab = 'payments_gateways';
         $this->author = 'thirty bees';
-        $this->version = '3.4.3';
+        $this->version = '3.4.4';
         $this->module_key = '6c2f48f238008e8f68271f5e4763d308';
 
         $this->currencies = true;
@@ -181,13 +181,14 @@ class paynl_paymentmethods extends PaymentModule
         /** @var Cart $cart */
         $cart = $params['cart'];
         $intOrderAmount = round(number_format(Tools::convertPrice($cart->getOrderTotal(), $objCurrency), 2, '.', '') * 100);
+        $token = Configuration::get('PAYNL_TOKEN');
+        $serviceId = Configuration::get('PAYNL_SERVICE_ID');
+
+        if (!$token || $serviceId) {
+            return '';
+        }
 
         if ($this->validateOrderData($intOrderAmount)) {
-            global $smarty;
-
-            $token = Configuration::get('PAYNL_TOKEN');
-            $serviceId = Configuration::get('PAYNL_SERVICE_ID');
-
             $methodOrder = Configuration::get('PAYNL_PAYMENT_METHOD_ORDER');
             $methodOrder = @unserialize($methodOrder);
             if ($methodOrder == false) {
@@ -254,7 +255,7 @@ class paynl_paymentmethods extends PaymentModule
                 }
             }
 
-            $smarty->assign(
+            $this->context->smarty->assign(
                 [
                     'this_path'     => $this->_path,
                     'profiles'      => $activeProfiles,
