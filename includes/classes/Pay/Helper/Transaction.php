@@ -148,16 +148,6 @@ class Pay_Helper_Transaction {
             $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, ['transaction_id' => $transactionId], (int) $currency, false, $customer->secure_key);
 
             $real_order_id = Order::getOrderByCartId($cart->id);
-        } elseif ($stateText == 'CANCEL') {
-            $real_order_id = Order::getOrderByCartId($cartId);
-
-            if ($real_order_id) {
-                $objOrder = new Order($real_order_id);
-                $history = new OrderHistory();
-                $history->id_order = (int) $objOrder->id;
-                $history->changeIdOrderState((int) $statusCancel, $objOrder);
-                $history->addWithemail();
-            }
         } elseif ($stateText == 'PENDING'){
             $id_order_state = $statusPending;
 
