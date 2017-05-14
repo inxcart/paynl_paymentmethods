@@ -16,7 +16,7 @@ class paynl_paymentmethods extends PaymentModule
         $this->name = 'paynl_paymentmethods';
         $this->tab = 'payments_gateways';
         $this->author = 'thirty bees';
-        $this->version = '3.4.4';
+        $this->version = '3.4.5';
         $this->module_key = '6c2f48f238008e8f68271f5e4763d308';
 
         $this->currencies = true;
